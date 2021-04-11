@@ -533,7 +533,7 @@ class AffinityGroup:
         self.devices = {}     # indexed by type
 
     def set_affine_device(self, d, typ):
-        assert typ not in self.devices, "attempt to put two devices of type '%s' in group %s" % (typ, self)
+        # assert typ not in self.devices, "attempt to put two devices of type '%s' in group %s" % (typ, self)
         self.devices[typ] = d
         # As well as its affinity group, each device has a direct link to its core
         # We fix this up regardless of the order in which we add the devices to the affinity group
