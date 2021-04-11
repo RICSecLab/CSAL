@@ -23,6 +23,51 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static int do_registration_thunderx2(struct cs_devices_t *devices)
+{
+    /* please refer to CSAL/demos/thunderx2_materials/output.txt */
+
+    //int num_cs_cpu = 128;
+    int num_cs_cpu = 40;
+    uintptr_t cti_base = 0x410420000;
+    uintptr_t pmu_base = 0x410430000; 
+    uintptr_t etm_base = 0x410440000;
+
+    cs_device_t rep, etr, etf, funnel;
+
+    if (registration_verbose)
+        printf("CSDEMO: Registering ThunderX2 CoreSight devices...\n");
+
+    cs_register_romtable(0x410000000);
+
+    if (registration_verbose)
+        printf("CSDEMO: Registring CPU Affinities...\n");
+
+    for (int i = 0; i < num_cs_cpu; i++ ) { 
+        /* CTI affinities */
+        cs_device_set_affinity(cs_device_register(cti_base + (0x100000 * i)), i);
+        /* PMU affinities */
+        // cs_device_set_affinity(cs_device_register(pmu_base + (0x100000 * i)), i);
+        /* ETM affinities */
+        cs_device_set_affinity(cs_device_register(etm_base + (0x100000 * i)), i);
+    }
+
+    if (registration_verbose)
+        printf("CSDEMO: Registering trace-bus connections...\n");
+
+    funnel = cs_device_get(0x410001000);
+    etf = cs_device_get(0x410002000);
+    rep = cs_device_get(0x410003000);
+    etr = cs_device_get(0x410004000);
+
+    cs_atb_register(funnel, 0, etf, 0); // from funnel to etf
+    cs_atb_register(etf, 0, rep, 0); // from etf to replicator
+    cs_atb_register(rep, 0, etr, 0); // from replicator to etr (on memory buffer) 
+
+    devices->etb = etr;
+
+    return 0;
+}
 
 static int do_registration_snowball(struct cs_devices_t *devices)
 {
@@ -537,6 +582,10 @@ const struct board known_boards[] = {
         .do_registration = do_registration_axx5500,
         .n_cpu = 16,
         .hardware = "LSI Axxia",
+    }, {
+        .do_registration = do_registration_thunderx2,
+        .n_cpu = 128,
+        .hardware = "Marvell ThunderX2",
     },
     {}
 };
