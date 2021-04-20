@@ -27,10 +27,10 @@ static int do_registration_thunderx2(struct cs_devices_t *devices)
 {
     /* please refer to CSAL/demos/thunderx2_materials/output.txt */
 
-    //int num_cs_cpu = 128;
-    int num_cs_cpu = 40;
+    int num_cs_cpu = 112;
+    // int num_cs_cpu = 40;
     uintptr_t cti_base = 0x410420000;
-    uintptr_t pmu_base = 0x410430000; 
+    // uintptr_t pmu_base = 0x410430000;
     uintptr_t etm_base = 0x410440000;
 
     cs_device_t rep, etr, etf, funnel;
@@ -584,7 +584,7 @@ const struct board known_boards[] = {
         .hardware = "LSI Axxia",
     }, {
         .do_registration = do_registration_thunderx2,
-        .n_cpu = 128,
+        .n_cpu = 32, // XXX To limit initialized CPU ETMs
         .hardware = "Marvell ThunderX2",
     },
     {}
