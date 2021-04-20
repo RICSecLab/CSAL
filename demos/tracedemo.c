@@ -374,10 +374,11 @@ static int do_configure_trace(const struct board *board)
         if (devices.ptm[i] == CS_ERRDESC) {
             fprintf(stderr, "** Failed to get trace source for CPU #%d\n",
                     i);
-            return -1;
+	    continue;
         }
-        if (cs_set_trace_source_id(devices.ptm[i], 0x10 + i) < 0) {
-            return -1;
+        if (!cs_atid_is_valid(0x10 + i) || cs_set_trace_source_id(devices.ptm[i], 0x10 + i) < 0) {
+	    fprintf(stderr, "** Failed to set valid trace source ID for CPU #%d\n", i);
+	    continue;
         }
         if (do_init_etm(devices.ptm[i]) < 0) {
             return -1;
