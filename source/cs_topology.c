@@ -376,7 +376,7 @@ static cs_device_t cs_device_or_romtable_register(cs_physaddr_t addr)
         unsigned int part_number =
             ((raw_read(local, CS_PIDR1) & 0xF) << 8) |
             (raw_read(local, CS_PIDR0) & 0xFF);
-        if (part_number == 0x101) {
+        if (part_number == 0x101 || part_number == 0x0AF) {
             d = cs_device_new(addr, local);
             assert(d != NULL);
             d->is_unlocked = 1;
