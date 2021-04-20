@@ -43,9 +43,14 @@ static int print_ptm_config(const struct board *board, int ptm_no)
             ("CS_ETM_DEMO: Configuring trace source id for CPU #%d ETM/PTM...\n",
              i);
         devices.ptm[i] = cs_cpu_get_device(i, CS_DEVCLASS_SOURCE);
-        if (cs_set_trace_source_id(devices.ptm[i], 0x10 + i) < 0) {
-            return -1;
-        }
+	if (devices.ptm[i] == (void *)0) {
+	    printf("CS_ETM_DEMO: Failed to get trace source device for CPU #%d\n", i);
+	} else {
+		if (!cs_atid_is_valid(0x10 + i) || cs_set_trace_source_id(devices.ptm[i], 0x10 + i) < 0) {
+		    printf("CS_ETM_DEMO: Failed to set trace source ID for CPU #%d\n", i);
+		    continue;
+		}
+	}
     }
 
     /* Print out ETM/PTM configuration */
@@ -124,6 +129,7 @@ int main(int argc, char **argv)
                 if (i + 1 < argc) {
                     ptm_no = strtoul(argv[i + 1], NULL, 0);
                     printf("CS_ETM_DEMO: Selecting CPU #%d\n", ptm_no);
+		    i++;
                 }
             } else if (strncmp(argv[i], "-d", 2) == 0) {
                 dump = true;
