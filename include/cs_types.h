@@ -177,7 +177,7 @@ typedef enum {
     
 */
 #ifndef LIB_MAX_CPU_DEVICES
-#define LIB_MAX_CPU_DEVICES 32
+#define LIB_MAX_CPU_DEVICES 256
 #endif
 
 
