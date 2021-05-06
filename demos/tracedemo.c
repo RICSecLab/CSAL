@@ -78,6 +78,7 @@ static bool etb_stop_on_flush;
 static unsigned int etb_post_trig_words;
 
 static bool return_stack;
+static bool branch_broadcast;
 
 #define INVALID_ADDRESS 1	/* never a valid address */
 static unsigned long o_trace_start_address = INVALID_ADDRESS;
@@ -282,6 +283,10 @@ static int do_config_etmv3_ptm(int n_core)
         tconfig.cr.raw.c.ret_stack = 1;
     }
 
+    if (branch_broadcast) {
+        tconfig.cr.raw.c.branch_output = 1;
+    }
+
     cs_etm_config_print(&tconfig);
     cs_etm_config_put(devices.ptm[n_core], &tconfig);
 
@@ -316,6 +321,9 @@ static int do_config_etmv4(int n_core)
 
     if (return_stack)
         tconfig.configr.bits.rs = 1; /* set the return stack */
+
+    if (branch_broadcast)
+        tconfig.configr.bits.bb = 1; /* enable branch broadcast mode */
     
     if (!full) {
         /*  set up an address range filter - use comparator pair and the view-inst registers */
@@ -589,6 +597,7 @@ int main(int argc, char **argv)
     trace_timestamps = false;
     trace_cycle_accurate = false;
     return_stack = false;
+    branch_broadcast = false;
     board_name[0] = 0;
 
     pause_mode = 0;
@@ -645,6 +654,9 @@ int main(int argc, char **argv)
                 } else if (strncmp(opt, "return-stack", 12) == 0) {
                     printf("Enabling ETM return stack\n");
                     return_stack = true;
+                } else if (strncmp(opt, "branch-broadcast", 16) == 0) {
+                    printf("Enabling ETM branch broadcast\n");
+                    branch_broadcast = true;
                 } else if (strncmp(opt, "etb-words", 9) == 0) {
                     if (i + 1 < argc) {
                         etb_post_trig_words =
