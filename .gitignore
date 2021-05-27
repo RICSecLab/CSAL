@@ -60,3 +60,12 @@ bin/
 *.VC.VC.opendb
 *.iobj
 *.ipdb
+
+# ignore build directories
+build/dbg-arm64
+build/rel-arm64
+demos/dbg-arm64
+demos/rel-arm64
+
+# ignore ctags files
+tags
