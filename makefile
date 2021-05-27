@@ -42,19 +42,19 @@ start:
 
 .PHONY: lib
 lib:
-	cd ./build && make
+	$(MAKE) -C build
 
 .PHONY: demos
 demos:
-	cd ./demos && make
+	$(MAKE) -C demos
 
 .PHONY: experimental
 experimental:
-	cd ./experimental && make
+	$(MAKE) -C experimental
 
 .PHONY: python
 python:
-	cd ./python && make
+	$(MAKE) -C python
 
 #### cleaners...
 
@@ -63,19 +63,19 @@ clean: lib_clean demos_clean
 
 .PHONY: lib_clean
 lib_clean:
-	cd ./build && make clean
+	$(MAKE) -C build clean
 
 .PHONY: demos_clean
 demos_clean:
-	cd ./demos && make clean
+	$(MAKE) -C demos clean
 
 .PHONY: experimental_clean
 experimental_clean:
-	cd ./experimental && make clean
+	$(MAKE) -C experimental clean
 
 .PHONY: python_clean
 python_clean:
-	cd ./python && make clean
+	$(MAKE) -C python clean
 
 #### rebuild
 .PHONY: rebuild
