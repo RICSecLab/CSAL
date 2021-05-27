@@ -24,7 +24,7 @@ struct global G;
 /* iterations for waiting for bits */
 static int wait_iterations = 32;
 
-#ifdef DIAG
+#if DIAG
 /*
   Write a diagnostic message.
 
@@ -153,7 +153,7 @@ struct cs_device *cs_device_new(cs_physaddr_t addr,
     d->local_addr = local_addr;
     d->affine_cpu = CS_CPU_UNKNOWN;
     d->power_domain = G.power_domain_default;
-#ifdef DIAG
+#if DIAG
     d->diag_tracing = G.diag_tracing_default;
 #endif				/* DIAG */
     d->next = G.device_top;

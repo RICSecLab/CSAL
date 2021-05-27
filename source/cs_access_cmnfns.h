@@ -264,7 +264,7 @@ struct global {
 #define ERRDESC ((void *)0)
 
 
-#ifdef DIAG
+#if DIAG
 #define DTRACE(d) ((d)->diag_tracing || G.diag_tracing_default)
 #define DTRACEG   (G.diag_tracing_default)
 #else				/* !DIAG */
@@ -297,19 +297,15 @@ typedef int check_mmap_offset_is_big_enough[1 /
 #undef DIAG
 #endif
 
-#ifdef DIAG
-
+#if DIAG
 #ifdef UNIX_KERNEL
 #define diagf printk
 #else
 #define diagf _diagf
 extern void _diagf(char const *s, ...);
 #endif
-
 #else				/* !DIAG */
-void diagf(char const *s, ...)
-{
-}
+#define diagf(...)
 #endif				/* DIAG */
 /*
   This is the "physical address" value for a non-memory-mapped device, e.g.
