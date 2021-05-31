@@ -290,7 +290,7 @@ static void do_fetch_trace_etb(cs_device_t etb, char const *name,
             }
         }
 
-        fd = fopen(file_name, "wb");
+        fd = fopen(file_name, "ab");
         if (!fd) {
             perror("can't open trace output");
         } else {
