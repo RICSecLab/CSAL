@@ -180,6 +180,17 @@ int cs_buffer_has_wrapped(cs_device_t dev)
     return _cs_isset(d, CS_ETB_STATUS, CS_ETB_STATUS_Full);
 }
 
+int cs_get_buffer_rwp(cs_device_t dev)
+{
+  struct cs_device *d = DEV(dev);
+  unsigned int rwp;
+
+  assert(cs_device_has_class(dev, CS_DEVCLASS_BUFFER));
+
+  rwp = _cs_read(d, CS_ETB_RAM_WR_PTR);
+
+  return (int)rwp;
+}
 
 int cs_get_buffer_unread_bytes(cs_device_t dev)
 {
