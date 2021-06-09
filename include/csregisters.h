@@ -436,6 +436,7 @@ Address Comparator Type register bits.
 
 #define CS_ETMV4_ACATR_ExEL0_S     0x100    /**< Exclude Secure EL0 from comparison */
 #define CS_ETMV4_ACATR_ExEL1_S     0x200    /**< Exclude Secure EL1 from comparison */
+#define CS_ETMV4_ACATR_ExEL2_S     0x400    /**< Exclude Secure EL2 from comparison */
 #define CS_ETMV4_ACATR_ExEL3_S     0x800    /**< Exclude Secure EL3 from comparison */
 
 #define CS_ETMV4_ACATR_ExEL0_NS   0x1000    /**< Exclude Non-Secure EL0 from comparison */
