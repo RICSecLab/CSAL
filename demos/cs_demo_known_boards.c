@@ -575,64 +575,90 @@ static int do_registration_axx5500(struct cs_devices_t *devices)
 
 static int do_registration_jetson_nano(struct cs_devices_t *devices)
 {
-  enum { A57_0, A57_1, A57_2, A57_3 };
+  enum { CPU_0, CPU_1, CPU_2, CPU_3 };
 
   int i;
-  cs_device_t funnel_a57, funnel_major, etf, rep, etr, tpiu, stm, sys_cti;
+  cs_device_t funnel, cpu_big_funnel, etf, rep, etr, tpiu, stm, sys_cti;
 
   if (registration_verbose)
     printf("CSDEMO: Registering Jetson Nano CoreSight Devices...\n");
 
-  cs_register_romtable(0x72000000);
+  cs_register_romtable(0x72000000); // CoreSight Major Interconnect ROM
+  cs_register_romtable(0x72800000); // CoreSight Minor Interconnect ROM
+  cs_register_romtable(0x73000000); // CoreSight Big Interconnect ROM
+  cs_register_romtable(0x73400000); // CPU Big ROM
+
+  cs_device_t APBIC = cs_device_register(0x72000000);
+  cs_device_t sub_minor_APBIC = cs_device_register(0x72800000);
+  cs_device_t sub_big_APBIC = cs_device_register(0x73000000);
 
   if (registration_verbose)
     printf("CSDEMO: Registering CPU Affinities...\n");
 
   /* CTI affinities */
-  cs_device_set_affinity(cs_device_register(0x73420000), A57_0);
-  cs_device_set_affinity(cs_device_register(0x73520000), A57_1);
-  cs_device_set_affinity(cs_device_register(0x73620000), A57_2);
-  cs_device_set_affinity(cs_device_register(0x73720000), A57_3);
+  cs_device_set_affinity(cs_device_register(0x73420000), CPU_0);
+  cs_device_set_affinity(cs_device_register(0x73520000), CPU_1);
+  cs_device_set_affinity(cs_device_register(0x73620000), CPU_2);
+  cs_device_set_affinity(cs_device_register(0x73720000), CPU_3);
 
   /* PMU affinities */
-  cs_device_set_affinity(cs_device_register(0x73430000), A57_0);
-  cs_device_set_affinity(cs_device_register(0x73530000), A57_1);
-  cs_device_set_affinity(cs_device_register(0x73630000), A57_2);
-  cs_device_set_affinity(cs_device_register(0x73730000), A57_3);
+  cs_device_set_affinity(cs_device_register(0x73430000), CPU_0);
+  cs_device_set_affinity(cs_device_register(0x73530000), CPU_1);
+  cs_device_set_affinity(cs_device_register(0x73630000), CPU_2);
+  cs_device_set_affinity(cs_device_register(0x73730000), CPU_3);
 
   /* ETM affinities */
-  cs_device_set_affinity(cs_device_register(0x73440000), A57_0);
-  cs_device_set_affinity(cs_device_register(0x73540000), A57_1);
-  cs_device_set_affinity(cs_device_register(0x73640000), A57_2);
-  cs_device_set_affinity(cs_device_register(0x73740000), A57_3);
+  cs_device_set_affinity(cs_device_register(0x73440000), CPU_0);
+  cs_device_set_affinity(cs_device_register(0x73540000), CPU_1);
+  cs_device_set_affinity(cs_device_register(0x73640000), CPU_2);
+  cs_device_set_affinity(cs_device_register(0x73740000), CPU_3);
 
   if (registration_verbose)
     printf("CSDEMO: Registering trace-bus connections...\n");
 
-  funnel_a57 = cs_device_get(0x73010000);
-  cs_atb_register(cs_cpu_get_device(A57_0, CS_DEVCLASS_SOURCE), 0,
-                  funnel_a57, 0);
-  cs_atb_register(cs_cpu_get_device(A57_1, CS_DEVCLASS_SOURCE), 0,
-                  funnel_a57, 1);
-  cs_atb_register(cs_cpu_get_device(A57_2, CS_DEVCLASS_SOURCE), 0,
-                  funnel_a57, 2);
-  cs_atb_register(cs_cpu_get_device(A57_3, CS_DEVCLASS_SOURCE), 0,
-                  funnel_a57, 3);
+  cpu_big_funnel = cs_device_get(0x73010000);
+  cs_atb_register(cs_cpu_get_device(CPU_0, CS_DEVCLASS_SOURCE), 0,
+                  cpu_big_funnel, 0);
+  cs_atb_register(cs_cpu_get_device(CPU_1, CS_DEVCLASS_SOURCE), 0,
+                  cpu_big_funnel, 1);
+  cs_atb_register(cs_cpu_get_device(CPU_2, CS_DEVCLASS_SOURCE), 0,
+                  cpu_big_funnel, 2);
+  cs_atb_register(cs_cpu_get_device(CPU_3, CS_DEVCLASS_SOURCE), 0,
+                  cpu_big_funnel, 3);
 
-  funnel_major = cs_device_get(0x72010000);
-  etf = cs_device_get(0x72030000);
-  rep = cs_device_get(0x72040000);
-  etr = cs_device_get(0x72050000);
-  tpiu = cs_device_get(0x72060000);
-  stm = cs_device_get(0x72070000);
+  funnel = cs_device_register(0x72010000);
+  sys_cti = cs_device_register(0x72020000);
+  etf = cs_device_register(0x72030000);
+  rep = cs_device_register(0x72040000);
+  etr = cs_device_register(0x72050000);
+  tpiu = cs_device_register(0x72060000);
+  stm = cs_device_register(0x72070000);
 
-  cs_atb_register(funnel_a57, 0, funnel_major, 0);
-  cs_atb_register(stm, 0, funnel_major, 3);
+  // CoreSight Major
+  cs_atb_register(funnel, 0, APBIC, 0); // error here
+  cs_atb_register(sys_cti, 0, APBIC, 1);
+  cs_atb_register(etf, 0, APBIC, 2);
+  cs_atb_register(rep, 0, APBIC, 3);
+  cs_atb_register(etr, 0, APBIC, 4);
+  cs_atb_register(tpiu, 0, APBIC, 5);
+  cs_atb_register(stm, 0, APBIC, 6);
+  cs_device_t cpu_big_interconnect = cs_device_get(0x73000000);
+  cs_atb_register(cpu_big_interconnect, 0, APBIC, 9);
 
-  cs_atb_register(funnel_major, 0, etf, 0);
-  cs_atb_register(etf, 0, rep, 0);
-  cs_atb_register(rep, 0, etr, 0);
-  cs_atb_register(rep, 1, tpiu, 0);
+  // CPU Minor Interconnect
+  // Nothing particularly to write about so skip it 
+
+  // CPU Big Interconnect
+  cs_device_t cpu_big_rom = cs_device_get(0x73400000);
+
+  cs_atb_register(cpu_big_funnel, 0, sub_big_APBIC, 0);
+  cs_atb_register(cpu_big_rom, 0, sub_big_APBIC, 1);
+//   cs_atb_register(stm, 0, funnel, 6);
+
+//   cs_atb_register(funnel_major, 0, etf, 0);
+//   cs_atb_register(etf, 0, rep, 0);
+//   cs_atb_register(rep, 0, etr, 0);
+//   cs_atb_register(rep, 1, tpiu, 0);
 
   devices->itm = stm;
   devices->etb = etf;
@@ -641,7 +667,6 @@ static int do_registration_jetson_nano(struct cs_devices_t *devices)
   cs_stm_select_master(stm, 0);
 
   /* etf */
-  sys_cti = cs_device_register(0x72020000);
   cs_cti_connect_trigsrc(etf, CS_TRIGOUT_ETB_FULL,
       cs_cti_trigsrc(sys_cti, 0));
   cs_cti_connect_trigsrc(etf, CS_TRIGOUT_ETB_ACQCOMP,
@@ -670,7 +695,7 @@ static int do_registration_jetson_nano(struct cs_devices_t *devices)
       cs_cti_trigsrc(sys_cti, 6));
 
   for (i = 0; i < 4; i++) {
-    devices->cpu_id[i] = cpu_id[i];
+    devices->cpu_id[i] = 0x40 + i;
   }
 
   return 0;
