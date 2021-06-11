@@ -678,7 +678,15 @@ static int cs_device_outport_is_valid(struct cs_device *d, unsigned int p)
 
 static int cs_device_inport_is_valid(struct cs_device *d, unsigned int p)
 {
+#if 0
     return cs_device_has_atb_in(d) && p < d->n_in_ports;
+#else
+    if (!(p < d->n_in_ports)) {
+      diagf("!!! invalid inport number: %d (max: %d), but ignore\n",
+          p, d->n_in_ports);
+    }
+    return cs_device_has_atb_in(d);
+#endif
 }
 #endif
 /* ========== API functions ================ */
