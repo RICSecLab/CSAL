@@ -359,8 +359,10 @@ static int do_configure_trace(const struct board *board)
     int i, r;
 
     printf("CSDEMO: Configuring trace...\n");
+#if 0 /* XXX: On Jetson Nano, the TPIU exists, but is not active. */
     /* Ensure TPIU isn't generating back-pressure */
     cs_disable_tpiu();
+#endif
     /* While programming, ensure we are not collecting trace */
     cs_sink_disable(devices.etb);
     if (devices.itm_etb != NULL) {
