@@ -266,6 +266,10 @@ static void do_fetch_trace_etb(cs_device_t etb, char const *name,
         printf("  Buffer has wrapped: %d\n", cs_buffer_has_wrapped(etb));
     }
     unsigned char *buf = (unsigned char *) malloc(len);
+    if (!buf) {
+        fprintf(stderr, "** malloc failed\n");
+        return;
+    }
     n = cs_get_trace_data(etb, buf, len);
     if (n <= 0) {
         fprintf(stderr, "** failed to get trace, rc=%d\n", n);
@@ -297,6 +301,9 @@ static void do_fetch_trace_etb(cs_device_t etb, char const *name,
             fwrite(buf, n, 1, fd);
             fclose(fd);
         }
+    }
+    if (buf) {
+        free(buf);
     }
 }
 
