@@ -142,6 +142,17 @@ struct cs_device *cs_get_device_struct(cs_device_t dev)
     return (struct cs_device *) (dev);
 }
 
+void cs_device_unregister(struct cs_device *d)
+{
+    if (!d) {
+        return;
+    }
+
+    if (d->local_addr) {
+        io_unmap((void *)d->local_addr, /* FIXME: Hardcoded */ 4096);
+    }
+}
+
 struct cs_device *cs_device_new(cs_physaddr_t addr,
 				void volatile *local_addr)
 {
@@ -156,6 +167,7 @@ struct cs_device *cs_device_new(cs_physaddr_t addr,
 #if DIAG
     d->diag_tracing = G.diag_tracing_default;
 #endif				/* DIAG */
+    d->ops.unregister = cs_device_unregister;
     d->next = G.device_top;
     G.device_top = d;
     ++G.n_devices;
