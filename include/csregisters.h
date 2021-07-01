@@ -598,6 +598,20 @@ ETB: [CoreSight SoC TRM 3.10] - n.b. the register names there are more cryptic
 #define CS_ETB_CTRL          0x020     /**< ETB Control Register */
 #define CS_ETB_CTRL_TraceCaptEn  0x01  /**< ETB Control bitfield (#CS_ETB_CTRL) : Trace Capture Enable*/
 #define CS_ETB_RAM_WRITE_DATA 0x024	/**< ETB RAM Write Data Register */
+#define CS_ETB_RAM_MODE      0x028
+#define CS_ETB_RAM_MODE_CB   0x0
+#define CS_ETB_RAM_MODE_SW_FIFO   0x1
+#define CS_ETB_RAM_MODE_HW_FIFO   0x2
+#define CS_ETB_BUF_LEVEL_WM  0x034
+#define CS_ETB_AXICTL        0x110
+#define CS_ETB_AXICTL_CLEAR_MASK 0xfbf
+#define CS_ETB_AXICTL_PROT_CTL_B1 (1 << 1)
+#define CS_ETB_AXICTL_WR_BURST_16 0xf00
+#define CS_ETB_AXICTL_AXCACHE_OS (0xf << 2)
+#define CS_ETB_AXICTL_ARCACHE_OS (0xf << 16)
+#define CS_ETB_AXICTL_ARCACHE_MASK (0xf << 16)
+#define CS_ETB_DBALO         0x118
+#define CS_ETB_DBAHI         0x11c
 #define CS_ETB_FLFMT_STATUS  0x300	/**< ETB Formatter and Flush Status Register */
 #define CS_ETB_FLFMT_CTRL    0x304     /**< ETB Formatter and Flush Control Register */
 /**@}*/

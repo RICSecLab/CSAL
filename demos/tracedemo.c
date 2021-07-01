@@ -363,8 +363,14 @@ static int do_configure_trace(const struct board *board)
     /* Ensure TPIU isn't generating back-pressure */
     cs_disable_tpiu();
 #endif
+
+#if 0
     /* While programming, ensure we are not collecting trace */
     cs_sink_disable(devices.etb);
+    if (devices.trace_sinks[0]) {
+      cs_sink_disable(devices.trace_sinks[0]);
+    }
+#endif
     if (devices.itm_etb != NULL) {
         cs_sink_disable(devices.itm_etb);
     }
@@ -407,6 +413,14 @@ static int do_configure_trace(const struct board *board)
             ("CSDEMO: Could not enable trace buffer - not running demo\n");
         return -1;
     }
+    if (devices.trace_sinks[0]) {
+      if (cs_sink_enable(devices.trace_sinks[0]) != 0) {
+          printf
+              ("CSDEMO: Could not enable trace buffer - not running demo\n");
+          return -1;
+      }
+    }
+
     if (devices.itm_etb != NULL) {
         if (cs_sink_enable(devices.itm_etb) != 0) {
             printf("CSDEMO: Could not enable ITM trace buffer\n");
@@ -828,6 +842,10 @@ int main(int argc, char **argv)
     if (itm) {
         cs_trace_disable(devices.itm);
     }
+
+    if (devices.trace_sinks[0]) {
+      cs_sink_disable(devices.trace_sinks[0]);
+    }
     cs_sink_disable(devices.etb);
     if (devices.itm_etb != NULL) {
         cs_sink_disable(devices.itm_etb);
@@ -835,6 +853,11 @@ int main(int argc, char **argv)
 
     printf("CSDEMO: trace buffer contents: %u bytes\n",
            cs_get_buffer_unread_bytes(devices.etb));
+
+    if (devices.trace_sinks[0]) {
+      printf("CSDEMO: ETF trace buffer contents: %u bytes\n",
+             cs_get_buffer_unread_bytes(devices.trace_sinks[0]));
+    }
 
     pause_demo();
 

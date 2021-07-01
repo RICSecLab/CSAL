@@ -635,7 +635,13 @@ static int do_registration_jetson_nano(struct cs_devices_t *devices)
   cs_atb_register(rep, 1, tpiu, 0);
 
   devices->itm = stm;
+#if 0
   devices->etb = etf;
+  devices->trace_sinks[0] = etr;
+#else
+  devices->etb = etr;
+  devices->trace_sinks[0] = etf;
+#endif
 
   cs_stm_config_master(stm, 0, 0x71000000);
   cs_stm_select_master(stm, 0);
