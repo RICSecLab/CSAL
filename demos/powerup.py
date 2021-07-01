@@ -38,6 +38,6 @@ for d in os.listdir(sysfs):
     except:
         continue
     cpuidle = sysfs + "/" + d + "/cpuidle"
-    for s in [1,2]:
+    for s in [1]:
        wfile(((cpuidle + "/state%u/disable") % s), "1")
 
