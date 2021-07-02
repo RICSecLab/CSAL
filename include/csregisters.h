@@ -606,6 +606,10 @@ ETB: [CoreSight SoC TRM 3.10] - n.b. the register names there are more cryptic
 #define CS_ETB_AXICTL        0x110
 #define CS_ETB_AXICTL_CLEAR_MASK 0xfbf
 #define CS_ETB_AXICTL_PROT_CTL_B1 (1 << 1)
+#define CS_ETB_AXICTL_WR_BURST_1  0x000
+#define CS_ETB_AXICTL_WR_BURST_2  0x100
+#define CS_ETB_AXICTL_WR_BURST_4  0x300
+#define CS_ETB_AXICTL_WR_BURST_8  0x700
 #define CS_ETB_AXICTL_WR_BURST_16 0xf00
 #define CS_ETB_AXICTL_AXCACHE_OS (0xf << 2)
 #define CS_ETB_AXICTL_ARCACHE_OS (0xf << 16)
