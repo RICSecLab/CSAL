@@ -31,8 +31,8 @@ static int cs_sink_setup_common(cs_device_t dev)
     if (d->type == DEV_ETB || d->type == DEV_ETF) {
         d->v.etb.currently_reading = 0;
         if (_cs_isset(d, CS_ETB_CTRL, CS_ETB_CTRL_TraceCaptEn)) {
-            //return cs_report_device_error(d, "buffer is already enabled");
-            return 0;
+            /* If the sink is enabled, disable it before configuring */
+            cs_sink_disable(dev);
         }
         /* "The RAM Write Pointer Register must be programmed before trace
            capture is enabled." */
