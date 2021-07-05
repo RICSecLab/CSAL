@@ -87,7 +87,7 @@ int cs_sink_enable(cs_device_t dev)
 #endif
 
               _cs_write(d, CS_ETB_AXICTL, axictl);
-              unsigned long hwaddr = 0x00000000fad80000;
+              unsigned long hwaddr = 0x00000000fc180000;
               _cs_write(d, CS_ETB_DBALO, (hwaddr & 0xffffffff));
               _cs_write(d, CS_ETB_DBAHI, ((hwaddr >> 32) & 0xffffffff));
               /* Stop on a Flush operation.  For a TMC ETB we don't want to go straight

@@ -754,11 +754,17 @@ static int do_registration_jetsontx2(struct cs_devices_t *devices)
 	/* implementing trace-bus connections according to coresight-tools/top_rom_table.txt */
   cs_atb_register(funnel_major, 0, etf, 0);
   cs_atb_register(etf, 0, rep, 0);
-  cs_atb_register(rep, 1, etr, 0);
-  cs_atb_register(rep, 0, tpiu, 0);
+  cs_atb_register(rep, 0, etr, 0);
+  cs_atb_register(rep, 1, tpiu, 0);
 
   devices->itm = stm;
+#if 0
   devices->etb = etf;		/* core output through main etf */
+  devices->trace_sinks[0] = etr;
+#else
+  devices->etb = etr;
+  devices->trace_sinks[0] = etf;
+#endif
 
   /* stm registration */
   cs_stm_config_master(stm, 0, 0x0a000000);
