@@ -408,12 +408,20 @@ static int do_configure_trace(const struct board *board)
     }
 
     printf("CSDEMO: Enabling trace...\n");
+    if (cs_sink_etr_setup(devices.etb, 0x00000000fc180000, 0x80000) != 0) {
+        printf("CSDEMO: Could not setup ETR\n");
+        return -1;
+    }
     if (cs_sink_enable(devices.etb) != 0) {
         printf
             ("CSDEMO: Could not enable trace buffer - not running demo\n");
         return -1;
     }
     if (devices.trace_sinks[0]) {
+      if (cs_sink_etf_setup(devices.trace_sinks[0], CS_ETB_RAM_MODE_HW_FIFO) != 0) {
+          printf("CSDEMO: Could not setup ETF\n");
+          return -1;
+      }
       if (cs_sink_enable(devices.trace_sinks[0]) != 0) {
           printf
               ("CSDEMO: Could not enable trace buffer - not running demo\n");

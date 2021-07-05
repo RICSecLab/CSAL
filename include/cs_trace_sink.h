@@ -20,6 +20,8 @@
 #ifndef _included_cs_trace_sink_h
 #define _included_cs_trace_sink_h
 
+#include <stddef.h>
+
 /** \defgroup tracesink Generic device programming API for trace sinks and buffers
  * Provides enable / disable, along with triggers and trace extraction for generic buffers.
  *
@@ -29,6 +31,12 @@
 
 /** Check if sink is enabled */
 int cs_sink_is_enabled(cs_device_t dev);
+
+/* Setup ETF */
+int cs_sink_etf_setup(cs_device_t dev, unsigned int mode);
+
+/* Setup ETR */
+int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size);
 
 /**
    Enable a trace sink
