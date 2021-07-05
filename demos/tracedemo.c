@@ -58,6 +58,8 @@
 */
 
 #define KERNEL_TRACE_SIZE 0x700000
+#define DEFAULT_ETR_ADDR 0x00000000fc180000
+#define DEFAULT_ETR_SIZE 0x80000
 #define ALL_CPUS -1
 
 static struct cs_devices_t devices;
@@ -82,6 +84,9 @@ static bool return_stack;
 #define INVALID_ADDRESS 1	/* never a valid address */
 static unsigned long o_trace_start_address = INVALID_ADDRESS;
 static unsigned long o_trace_end_address = INVALID_ADDRESS;
+
+static unsigned long etr_addr = INVALID_ADDRESS;
+static size_t etr_size = 0;
 
 static unsigned long kernel_virtual_address(void)
 {
@@ -408,7 +413,7 @@ static int do_configure_trace(const struct board *board)
     }
 
     printf("CSDEMO: Enabling trace...\n");
-    if (cs_sink_etr_setup(devices.etb, 0x00000000fc180000, 0x80000) != 0) {
+    if (cs_sink_etr_setup(devices.etb, etr_addr, etr_size) != 0) {
         printf("CSDEMO: Could not setup ETR\n");
         return -1;
     }
@@ -708,6 +713,18 @@ int main(int argc, char **argv)
                     }
                     ++i;
                     sscanf(argv[i], "%lx", &o_trace_end_address);
+                } else if (strcmp(opt, "etr-addr") == 0) {
+                    if (i + 1 >= argc) {
+                        return help();
+                    }
+                    ++i;
+                    sscanf(argv[i], "%lx", &etr_addr);
+                } else if (strcmp(opt, "etr-size") == 0) {
+                    if (i + 1 >= argc) {
+                        return help();
+                    }
+                    ++i;
+                    sscanf(argv[i], "%lx", &etr_size);
                 } else if (strcmp(opt, "board-name") == 0) {
                     if (i + 1 >= argc) {
                         return help();
@@ -743,6 +760,13 @@ int main(int argc, char **argv)
                 "** trace end address 0x%lx must be greater than trace start address 0x%lx\n",
                 o_trace_end_address, o_trace_start_address);
         return EXIT_FAILURE;
+    }
+
+    if (etr_addr == INVALID_ADDRESS) {
+        etr_addr = DEFAULT_ETR_ADDR;
+    }
+    if (etr_size == 0) {
+        etr_size = DEFAULT_ETR_SIZE;
     }
 
     /*
