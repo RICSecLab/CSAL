@@ -45,6 +45,8 @@ void _diagf(char const *s, ...)
     va_end(args);
     fflush(stderr);
 }
+#else
+void _diagf(char const *s, ...) {}
 #endif				/* DIAG */
 
 int cs_device_is_non_mmio(struct cs_device *d)

@@ -297,16 +297,13 @@ typedef int check_mmap_offset_is_big_enough[1 /
 #undef DIAG
 #endif
 
-#if DIAG
 #ifdef UNIX_KERNEL
 #define diagf printk
 #else
 #define diagf _diagf
 extern void _diagf(char const *s, ...);
-#endif
-#else				/* !DIAG */
-#define diagf(...)
-#endif				/* DIAG */
+#endif              /* UNIX_KERNEL */
+
 /*
   This is the "physical address" value for a non-memory-mapped device, e.g.
   a replicator, that is represented for topology reasons
