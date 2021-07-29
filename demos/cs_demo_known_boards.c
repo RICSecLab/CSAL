@@ -695,7 +695,7 @@ static int do_registration_jetsontx2(struct cs_devices_t *devices)
 
 	enum { A57_0, A57_3, A57_4, A57_5, Denver_0, Denver_1};
 
-	cs_device_t rep, etr, etf, funnel_major, funnel_minor, funnel_bccplex, funnel_a57, funnel_denver, stm, tpiu, sys_cti;
+	cs_device_t rep, etr, etf, funnel_major, funnel_a57, stm, tpiu, sys_cti;
 
 	if (registration_verbose)
 		printf("CSDEMO: Registering Jetson TX2 CoreSight devices...\n");
