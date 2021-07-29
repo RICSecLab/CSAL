@@ -33,7 +33,7 @@
 include ../makefile-arch.inc
 
 # default settings - allow for cross compile of library 
-CC=$(CROSS_COMPILE)gcc
+CC?=$(CROSS_COMPILE)gcc
 CFLAGS=-Wall -Wno-switch
 
 LIB_DIR = ../lib/$(ARCH)/rel

@@ -33,7 +33,7 @@
 include ../makefile-arch.inc
 
 # default settings
-CC=$(CROSS_COMPILE)gcc
+CC?=$(CROSS_COMPILE)gcc
 CFLAGS=-Wall -Werror=implicit-function-declaration -Wno-switch -fno-omit-frame-pointer
 
 # extra per example specific options
