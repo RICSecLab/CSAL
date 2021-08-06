@@ -51,7 +51,7 @@ LIB_DIR_BM = ../lib/$(ARCH)/dbg_bm
 BUILD_DIR=./dbg-$(ARCH)
 BUILD_DIR_BM=./dbg_bm-$(ARCH)
 else
-CFLAGS+= -O2 -DNDEBUG
+CFLAGS+= -Ofast -DNDEBUG
 endif
 
 # platform options
