@@ -131,7 +131,7 @@ int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size)
 
     axictl &= ~CS_ETB_AXICTL_CLEAR_MASK;
     axictl |= CS_ETB_AXICTL_PROT_CTL_B1;
-    axictl |= CS_ETB_AXICTL_WR_BURST_4;
+    axictl |= CS_ETB_AXICTL_WR_BURST_16;
     axictl |= CS_ETB_AXICTL_AXCACHE_OS;
 
 #if 0
