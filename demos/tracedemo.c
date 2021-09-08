@@ -413,7 +413,7 @@ static int do_configure_trace(const struct board *board)
     }
 
     printf("CSDEMO: Enabling trace...\n");
-    if (cs_sink_etr_setup(devices.etb, etr_addr, etr_size) != 0) {
+    if (cs_sink_etr_setup(devices.etb, etr_addr, etr_size, CS_ETB_AXICTL_WR_BURST_1) != 0) {
         printf("CSDEMO: Could not setup ETR\n");
         return -1;
     }
