@@ -37,7 +37,7 @@ int cs_sink_etf_setup(cs_device_t dev, unsigned int mode);
 
 /* Setup ETR */
 int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size,
-    unsigned int axictl_wr_burst_len);
+    unsigned int axictl);
 
 /**
    Enable a trace sink

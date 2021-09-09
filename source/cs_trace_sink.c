@@ -103,7 +103,7 @@ int cs_sink_etf_setup(cs_device_t dev, unsigned int mode)
 }
 
 int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size,
-    unsigned int axictl_wr_burst_len)
+    unsigned int axictl)
 {
     int rc;
     struct cs_device *d = DEV(dev);
@@ -117,29 +117,6 @@ int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size,
 
     _cs_unlock(d);
 
-    /* Get preferred AXICTL WrBurstLen from WBUF_DEPTH in DEVID */
-    if (axictl_wr_burst_len == 0) {
-        unsigned int wbuf_depth = (_cs_read(d, CS_DEVID) & 0x3800) >> 11;
-        axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_1;
-        switch (wbuf_depth) {
-            case 0x2: /* 4 entries */
-                axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_2;
-                break;
-            case 0x3: /* 8 entries */
-                axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_4;
-                break;
-            case 0x4: /* 16 entries */
-                axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_8;
-                break;
-            case 0x5: /* 32 entries */
-                axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_16;
-                break;
-            default: /* unreachable */
-                axictl_wr_burst_len = CS_ETB_AXICTL_WR_BURST_1;
-                break;
-        }
-    }
-
     unsigned int flfmt;
     /* Set up flushing and formatting controls.
        CS_ETB_FLFMT_CTRL_EnFTC: enable formatting into 16-byte frames,
@@ -151,12 +128,12 @@ int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size,
 
     _cs_write(d, CS_ETB_RAM_DEPTH, size / 4);
 
-    unsigned int axictl = _cs_read(d, CS_ETB_AXICTL);
-
-    axictl &= ~CS_ETB_AXICTL_CLEAR_MASK;
-    axictl |= CS_ETB_AXICTL_PROT_CTL_B1;
-    axictl |= axictl_wr_burst_len & 0xf00;
-    axictl |= CS_ETB_AXICTL_AXCACHE_OS;
+    /* AXI control configuration fallback settings */
+    if (axictl == 0) {
+        axictl |= CS_ETB_AXICTL_PROT_CTL_B1;
+        axictl |= CS_ETB_AXICTL_AXCACHE_OS;
+        axictl |= CS_ETB_AXICTL_WR_BURST_1;
+    }
 
     _cs_write(d, CS_ETB_AXICTL, axictl);
     _cs_write(d, CS_ETB_DBALO, (hwaddr & 0xffffffff));

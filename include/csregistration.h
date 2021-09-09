@@ -83,6 +83,7 @@ struct board {
 							  /**< pointer to board specific registration function */
     int n_cpu;	  /**< number of CPUs on the board. */
     const char *hardware; /**< Name of the hardware - to be matched to a read from `/proc/cpuinfo` */
+    unsigned int etr_axictl; /**< ETR AXI control configuration. TODO: Store this info in more appropriate location. */
 };
 
 /*!
