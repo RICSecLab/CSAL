@@ -131,7 +131,7 @@ int cs_sink_etr_setup(cs_device_t dev, unsigned long hwaddr, size_t size,
     /* AXI control configuration fallback settings */
     if (axictl == 0) {
         axictl |= CS_ETB_AXICTL_PROT_CTL_B1;
-        axictl |= CS_ETB_AXICTL_AXCACHE_OS;
+        axictl &= ~CS_ETB_AXICTL_AXCACHE_OS;
         axictl |= CS_ETB_AXICTL_WR_BURST_1;
     }
 
