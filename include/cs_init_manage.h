@@ -44,6 +44,9 @@ int cs_shutdown(void);
 */
 int cs_release(void);
 
+/** Reset the number of programming errors detected. */
+void cs_reset_error_count(void);
+
 /** Return the number of programming errors detected so far. */
 unsigned int cs_error_count(void);
 

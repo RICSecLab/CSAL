@@ -123,6 +123,11 @@ int cs_release(void)
     return 0;
 }
 
+void cs_reset_error_count(void)
+{
+    G.n_api_errors = 0;
+}
+
 unsigned int cs_error_count(void)
 {
     return G.n_api_errors;
