@@ -173,6 +173,7 @@ int cs_sink_enable(cs_device_t dev)
 int cs_sink_disable(cs_device_t dev)
 {
     int rc;
+    int mode;
     struct cs_device *d = DEV(dev);
 
     assert(cs_device_has_class(dev, CS_DEVCLASS_SINK));
@@ -192,6 +193,17 @@ int cs_sink_disable(cs_device_t dev)
         /* Stopping and flushing the SWO is not supported */
         return -1;
     } else if (d->type == DEV_ETB || d->type == DEV_ETF) {
+        mode = _cs_read(d, CS_ETB_RAM_MODE);
+        /* Hardware FIFO mode */
+        if (mode == CS_ETB_RAM_MODE_HW_FIFO &&
+            _cs_isset(d, CS_ETB_CTRL, CS_ETB_CTRL_TraceCaptEn)) {
+            /* Set StopOnFl */
+            _cs_set(d, CS_ETB_FLFMT_CTRL, CS_ETB_FLFMT_CTRL_StopFl);
+            /* Set FlushMan to flush and stop */
+            _cs_set_wo(d, CS_ETB_FLFMT_CTRL, CS_ETB_FLFMT_CTRL_FOnMan);
+            /* Wait until TMCReady is equal to one. */
+            _cs_wait(d, CS_ETB_STATUS, CS_TMC_STATUS_TMCReady);
+        }
         /* ETB or TMC */
         if (d->v.etb.is_tmc_device &&
             _cs_isset(d, CS_ETB_CTRL, CS_ETB_CTRL_TraceCaptEn)) {
